@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../core/l10n/strings.dart';
+import '../../core/utils/errors.dart';
 import '../../core/widgets/misc.dart';
 import '../../data/providers.dart';
 import 'auth_widgets.dart';
@@ -43,7 +44,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         await ref.read(supabaseProvider).auth.resend(type: OtpType.signup, email: email);
         if (mounted) context.go('/verify?email=${Uri.encodeQueryComponent(email)}');
       } else {
-        showSnack(context, e.message);
+        showSnack(context, friendlyError(context, e));
       }
     } catch (_) {
       if (mounted) showSnack(context, context.tr('error'));

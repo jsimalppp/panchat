@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../core/l10n/strings.dart';
+import '../../core/utils/errors.dart';
 import '../../core/widgets/misc.dart';
 import '../../data/providers.dart';
 import 'auth_widgets.dart';
@@ -40,7 +41,7 @@ class _ForgotScreenState extends ConsumerState<ForgotScreen> {
         showSnack(context, context.tr('codeSent'));
       }
     } on AuthException catch (e) {
-      if (mounted) showSnack(context, e.message);
+      if (mounted) showSnack(context, friendlyError(context, e));
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -61,7 +62,7 @@ class _ForgotScreenState extends ConsumerState<ForgotScreen> {
       );
       await auth.updateUser(UserAttributes(password: _password.text));
     } on AuthException catch (e) {
-      if (mounted) showSnack(context, e.message);
+      if (mounted) showSnack(context, friendlyError(context, e));
     } catch (_) {
       if (mounted) showSnack(context, context.tr('error'));
     } finally {

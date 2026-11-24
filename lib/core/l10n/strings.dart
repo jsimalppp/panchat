@@ -71,6 +71,15 @@ class S {
     'english': 'English',
     'notAdmin': 'Only admins can do this',
     'sayHi': 'Say hi 👋',
+    'errNetwork': 'No internet connection. Check your network and try again.',
+    'errEmailTaken': 'This email is already registered. Try logging in.',
+    'errUsernameTaken': 'This username is taken, try another one.',
+    'errBadLogin': 'Wrong email or password.',
+    'errNotConfirmed': 'Your email is not verified yet. We sent you a new code.',
+    'errBadCode': 'The code is wrong or expired. Request a new one.',
+    'errRateLimit': 'Too many attempts. Wait a minute and try again.',
+    'errBadEmail': 'Enter a valid email address.',
+    'errGeneric': 'Something went wrong. Please try again.',
   };
 
   static const Map<String, String> _ar = {
@@ -142,6 +151,15 @@ class S {
     'english': 'English',
     'notAdmin': 'للمشرفين فقط',
     'sayHi': 'قول مرحبا 👋',
+    'errNetwork': 'مفيش اتصال بالإنترنت. اتأكد من الشبكة وحاول تاني.',
+    'errEmailTaken': 'الإيميل ده متسجل قبل كده. جرب تسجل دخول.',
+    'errUsernameTaken': 'اسم المستخدم ده محجوز، جرب اسم تاني.',
+    'errBadLogin': 'الإيميل أو كلمة السر غلط.',
+    'errNotConfirmed': 'الإيميل لسه متأكدش. بعتنالك كود جديد.',
+    'errBadCode': 'الكود غلط أو انتهت صلاحيته. اطلب كود جديد.',
+    'errRateLimit': 'محاولات كتير. استنى دقيقة وحاول تاني.',
+    'errBadEmail': 'اكتب إيميل صحيح.',
+    'errGeneric': 'حصل خطأ. حاول تاني.',
   };
 
   static String of(BuildContext c, String k) {

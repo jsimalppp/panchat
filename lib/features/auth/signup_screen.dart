@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../core/l10n/strings.dart';
+import '../../core/utils/errors.dart';
 import '../../core/utils/format.dart';
 import '../../core/widgets/misc.dart';
 import '../../data/providers.dart';
@@ -36,24 +37,41 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
     if (!_form.currentState!.validate()) return;
     setState(() => _busy = true);
     final email = _email.text.trim();
+    final username = _username.text.trim().toLowerCase();
+    final client = ref.read(supabaseProvider);
     try {
-      final res = await ref.read(supabaseProvider).auth.signUp(
+      // Pre-check the username (the database also enforces it).
+      try {
+        final free = await client.rpc('username_available', params: {'uname': username});
+        if (free == false) {
+          if (mounted) showSnack(context, context.tr('errUsernameTaken'));
+          return;
+        }
+      } catch (_) {
+        // Check unavailable: the signup trigger still rejects duplicates.
+      }
+      final res = await client.auth.signUp(
         email: email,
         password: _password.text,
         data: {
-          'username': _username.text.trim().toLowerCase(),
+          'username': username,
           'display_name': _name.text.trim(),
         },
       );
       if (!mounted) return;
+      // With email confirmation on, Supabase answers "success" for an existing
+      // email but returns a user with no identities.
+      final ids = res.user?.identities;
+      if (res.user != null && ids != null && ids.isEmpty) {
+        showSnack(context, context.tr('errEmailTaken'));
+        return;
+      }
       if (res.session == null) {
         context.go('/verify?email=${Uri.encodeQueryComponent(email)}');
       }
       // If a session exists the router sends the user to profile setup.
-    } on AuthException catch (e) {
-      if (mounted) showSnack(context, e.message);
-    } catch (_) {
-      if (mounted) showSnack(context, context.tr('error'));
+    } catch (e) {
+      if (mounted) showSnack(context, friendlyError(context, e));
     } finally {
       if (mounted) setState(() => _busy = false);
     }

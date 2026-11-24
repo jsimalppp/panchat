@@ -9,6 +9,7 @@ import '../../core/widgets/misc.dart';
 import '../../core/widgets/user_avatar.dart';
 import '../../data/models/chat_summary.dart';
 import '../../data/providers.dart';
+import '../../data/theme_store.dart';
 import 'chats_provider.dart';
 
 class ChatsListScreen extends ConsumerWidget {
@@ -24,6 +25,12 @@ class ChatsListScreen extends ConsumerWidget {
           Text(context.tr('chats'), style: const TextStyle(fontWeight: FontWeight.bold)),
         ]),
         actions: [
+          IconButton(
+            icon: Icon(Theme.of(context).brightness == Brightness.dark ? Icons.light_mode : Icons.dark_mode),
+            tooltip: context.tr('darkMode'),
+            onPressed: () => ref.read(themeModeProvider.notifier).set(
+                Theme.of(context).brightness == Brightness.dark ? ThemeMode.light : ThemeMode.dark),
+          ),
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () => context.push('/settings'),

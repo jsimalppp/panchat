@@ -6,6 +6,7 @@ import '../../core/l10n/strings.dart';
 import '../../core/widgets/misc.dart';
 import '../../data/models/profile.dart';
 import '../../data/providers.dart';
+import '../chats/chats_provider.dart';
 import 'new_chat_screen.dart';
 
 class NewGroupScreen extends ConsumerStatefulWidget {
@@ -36,6 +37,7 @@ class _NewGroupScreenState extends ConsumerState<NewGroupScreen> {
       final id = await ref
           .read(conversationRepoProvider)
           .createGroup(title, _members.keys.toList());
+      ref.read(chatsRefreshProvider.notifier).state++;
       if (mounted) context.pushReplacement('/chat/$id');
     } catch (_) {
       if (mounted) showSnack(context, context.tr('error'));

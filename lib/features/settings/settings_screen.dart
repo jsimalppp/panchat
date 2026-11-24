@@ -6,6 +6,7 @@ import '../../core/l10n/strings.dart';
 import '../../core/widgets/user_avatar.dart';
 import '../../data/locale_store.dart';
 import '../../data/providers.dart';
+import '../../data/theme_store.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -42,6 +43,12 @@ class SettingsScreen extends ConsumerWidget {
               selected: {current == 'en' ? 'en' : 'ar'},
               onSelectionChanged: (s) => ref.read(localeProvider.notifier).set(s.first),
             ),
+          ),
+          SwitchListTile(
+            secondary: const Icon(Icons.dark_mode),
+            title: Text(context.tr('darkMode')),
+            value: Theme.of(context).brightness == Brightness.dark,
+            onChanged: (v) => ref.read(themeModeProvider.notifier).set(v ? ThemeMode.dark : ThemeMode.light),
           ),
           ListTile(
             leading: const Icon(Icons.logout),

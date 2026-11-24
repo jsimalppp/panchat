@@ -22,7 +22,11 @@ class ChatController extends ChangeNotifier {
     required this.client,
     required this.convRepo,
     required this.mediaRepo,
+    this.onActivity,
   });
+
+  /// Called after sending, receiving or marking read, so the chat list refreshes.
+  final VoidCallback? onActivity;
 
   final String conversationId;
   final SupabaseClient client;
@@ -234,6 +238,7 @@ class ChatController extends ChangeNotifier {
   Future<void> markRead() async {
     try {
       await convRepo.markRead(conversationId);
+      onActivity?.call();
     } catch (_) {}
   }
 
@@ -346,6 +351,7 @@ class ChatController extends ChangeNotifier {
       if (j >= 0) messages[j] = messages[j].copyWith(pending: false, failed: true);
     }
     _notify();
+    onActivity?.call();
   }
 
   Future<void> retry(Message m) => _send(m.copyWith(pending: true, failed: false));

@@ -9,6 +9,7 @@ import '../../core/widgets/misc.dart';
 import '../../core/widgets/user_avatar.dart';
 import '../../data/models/profile.dart';
 import '../../data/providers.dart';
+import '../chats/chats_provider.dart';
 
 /// Reusable username search list.
 class UserSearchList extends ConsumerStatefulWidget {
@@ -110,6 +111,7 @@ class NewChatScreen extends ConsumerWidget {
             onPick: (p) async {
               try {
                 final id = await ref.read(conversationRepoProvider).createDirect(p.id);
+                ref.read(chatsRefreshProvider.notifier).state++;
                 if (context.mounted) context.pushReplacement('/chat/$id');
               } catch (_) {
                 if (context.mounted) showSnack(context, context.tr('error'));

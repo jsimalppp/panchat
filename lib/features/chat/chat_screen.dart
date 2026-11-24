@@ -9,6 +9,7 @@ import '../../core/widgets/misc.dart';
 import '../../core/widgets/user_avatar.dart';
 import '../../data/models/message.dart';
 import '../../data/providers.dart';
+import '../chats/chats_provider.dart';
 import 'chat_controller.dart';
 import 'composer.dart';
 import 'message_bubble.dart';
@@ -22,13 +23,16 @@ class ChatScreen extends ConsumerStatefulWidget {
 
 class _ChatScreenState extends ConsumerState<ChatScreen> with WidgetsBindingObserver {
   late final ChatController _c;
+  late final StateController<int> _refresh;
   final _scroll = ScrollController();
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _refresh = ref.read(chatsRefreshProvider.notifier);
     _c = ChatController(
+      onActivity: () { if (mounted) _refresh.state++; },
       conversationId: widget.conversationId,
       client: ref.read(supabaseProvider),
       convRepo: ref.read(conversationRepoProvider),
@@ -51,6 +55,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> with WidgetsBindingObse
     WidgetsBinding.instance.removeObserver(this);
     _scroll.dispose();
     _c.dispose();
+    final r = _refresh;
+    Future.microtask(() => r.state++);
     super.dispose();
   }
 

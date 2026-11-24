@@ -8,6 +8,7 @@ import 'core/l10n/strings.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'data/locale_store.dart';
+import 'data/theme_store.dart';
 import 'data/providers.dart';
 
 class PanchatApp extends ConsumerWidget {
@@ -17,11 +18,13 @@ class PanchatApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
     final locale = ref.watch(localeProvider);
+    final themeMode = ref.watch(themeModeProvider);
     return MaterialApp.router(
       title: 'Panchat',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
+      themeMode: themeMode,
       routerConfig: router,
       locale: locale,
       supportedLocales: const [Locale('ar'), Locale('en')],

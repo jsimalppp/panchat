@@ -31,8 +31,28 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Future<void> _submit() async {
     if (!_form.currentState!.validate()) return;
     setState(() => _busy = true);
-    final email = _email.text.trim();
+    final typed = _email.text.trim();
+    String email = typed;
     try {
+      if (!typed.contains('@')) {
+        // Username login: resolve the email first.
+        String? resolved;
+        try {
+          final r = await ref
+              .read(supabaseProvider)
+              .rpc('email_for_username', params: {'uname': typed.toLowerCase()});
+          resolved = r as String?;
+        } catch (_) {
+          if (mounted) showSnack(context, context.tr('errUseEmail'));
+          return;
+        }
+        if (resolved == null || resolved.isEmpty) {
+          // Same message as a wrong password, so usernames are not revealed.
+          if (mounted) showSnack(context, context.tr('errBadLogin'));
+          return;
+        }
+        email = resolved;
+      }
       await ref.read(supabaseProvider).auth.signInWithPassword(
             email: email,
             password: _password.text,
@@ -64,8 +84,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             TextFormField(
               controller: _email,
               keyboardType: TextInputType.emailAddress,
-              autofillHints: const [AutofillHints.email],
-              decoration: InputDecoration(labelText: context.tr('email')),
+              autocorrect: false,
+              autofillHints: const [AutofillHints.username, AutofillHints.email],
+              decoration: InputDecoration(labelText: context.tr('emailOrUsername')),
               validator: (v) => requiredValidator(context, v),
             ),
             const SizedBox(height: 12),

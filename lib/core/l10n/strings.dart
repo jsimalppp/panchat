@@ -80,6 +80,9 @@ class S {
     'errRateLimit': 'Too many attempts. Wait a minute and try again.',
     'errBadEmail': 'Enter a valid email address.',
     'errGeneric': 'Something went wrong. Please try again.',
+    'darkMode': 'Dark mode',
+    'emailOrUsername': 'Email or username',
+    'errUseEmail': 'Could not look up that username. Log in with your email instead.',
   };
 
   static const Map<String, String> _ar = {
@@ -160,6 +163,9 @@ class S {
     'errRateLimit': 'محاولات كتير. استنى دقيقة وحاول تاني.',
     'errBadEmail': 'اكتب إيميل صحيح.',
     'errGeneric': 'حصل خطأ. حاول تاني.',
+    'darkMode': 'الوضع الداكن',
+    'emailOrUsername': 'الإيميل أو اسم المستخدم',
+    'errUseEmail': 'تعذر البحث عن اسم المستخدم. سجّل دخول بالإيميل.',
   };
 
   static String of(BuildContext c, String k) {

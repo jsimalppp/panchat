@@ -6,6 +6,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../data/models/chat_summary.dart';
 import '../../data/providers.dart';
 
+/// Bump to force the chat list to reload (no loading flash).
+final chatsRefreshProvider = StateProvider<int>((ref) => 0);
+
 /// Chat list that reloads whenever Realtime reports a relevant change.
 /// RLS means we only receive events for conversations we belong to.
 final chatsProvider = StreamProvider.autoDispose<List<ChatSummary>>((ref) {
@@ -29,6 +32,7 @@ final chatsProvider = StreamProvider.autoDispose<List<ChatSummary>>((ref) {
     debounce = Timer(const Duration(milliseconds: 300), load);
   }
 
+  ref.listen<int>(chatsRefreshProvider, (_, __) => scheduleLoad());
   load();
   final me = client.auth.currentUser?.id ?? 'anon';
   final channel = client

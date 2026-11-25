@@ -32,27 +32,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     if (!_form.currentState!.validate()) return;
     setState(() => _busy = true);
     final typed = _email.text.trim();
-    String email = typed;
+    final email = typed;
     try {
-      if (!typed.contains('@')) {
-        // Username login: resolve the email first.
-        String? resolved;
-        try {
-          final r = await ref
-              .read(supabaseProvider)
-              .rpc('email_for_username', params: {'uname': typed.toLowerCase()});
-          resolved = r as String?;
-        } catch (_) {
-          if (mounted) showSnack(context, context.tr('errUseEmail'));
-          return;
-        }
-        if (resolved == null || resolved.isEmpty) {
-          // Same message as a wrong password, so usernames are not revealed.
-          if (mounted) showSnack(context, context.tr('errBadLogin'));
-          return;
-        }
-        email = resolved;
-      }
       await ref.read(supabaseProvider).auth.signInWithPassword(
             email: email,
             password: _password.text,
@@ -86,7 +67,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               keyboardType: TextInputType.emailAddress,
               autocorrect: false,
               autofillHints: const [AutofillHints.username, AutofillHints.email],
-              decoration: InputDecoration(labelText: context.tr('emailOrUsername')),
+              decoration: InputDecoration(labelText: context.tr('email')),
               validator: (v) => requiredValidator(context, v),
             ),
             const SizedBox(height: 12),
